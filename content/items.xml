@@ -1,4 +1,4 @@
 <items gfxroot="gfx/item/" version="1">
-	<active description="Just test" gfx="Collectible_test.png" maxcharges="12" name="Desu" />
+	<active cache="damage flying" description="Just test" gfx="Collectible_test.png" maxcharges="12" name="Desu" />
 </items>
  
