@@ -1,30 +1,7 @@
-
---TODO:перенести реализацию в timers.lua (я хз как)
-local TManager = {timers = {}};
-TManager.__index = TManager;
-
-function TManager:updateTimers(time)
-    for k,v in pairs(TManager.timers) do
-        if v.startTime+v.Duration < time then
-            v.CallBack(v.Extra)
-            TManager.timers[k] = nil;
-        end
-    end
-end
-
-function TManager:addTimer(timer_name,duration,extra_data,timer_callback)
-    local timer = {};
-    timer.startTime = Game():GetFrameCount();
-    timer.Duration = duration;
-    timer.CallBack = timer_callback;
-    timer.Extra = extra_data;
-    TManager.timers[timer_name] = timer;
-end
-
-
+require("resources.scripts.timers")
+local TimerManager = createTManager();
 
 local ptb = RegisterMod("PathToBlessing",0);
-
 
 ptb.COLL_TEST = Isaac.GetItemIdByName("Desu");
 ptb.TEST_COSTUME = Isaac.GetCostumeIdByPath("gfx/characters/copypaste.anm2");
@@ -41,7 +18,7 @@ function ptb:use_test( )
     Isaac.GetPlayer(0):AddCacheFlags(CacheFlag.CACHE_FIREDELAY);
     Isaac.GetPlayer(0):AddCacheFlags(CacheFlag.CACHE_FLYING);
 	Isaac.GetPlayer(0):EvaluateItems();
-    TManager:addTimer("test_item_use",240,nil,function();
+    TimerManager:addTimer("test_item_use",240,nil,function();
         ptb.invulnerability = false;
         ptb.TestBaff = false;
         Isaac.GetPlayer(0):TryRemoveNullCostume(ptb.TEST_COSTUME);
@@ -53,7 +30,7 @@ function ptb:use_test( )
 end
 
 function ptb:mainLoop()
-    TManager:updateTimers(Game():GetFrameCount());
+    TimerManager:updateTimers();
 end
 
 function ptb:onCache(EntityPlayer,Cache)
