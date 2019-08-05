@@ -23,7 +23,7 @@ end
 
 
 
-local ptb = RegisterMod("PathToBlessing");
+local ptb = RegisterMod("PathToBlessing",0);
 
 
 ptb.COLL_TEST = Isaac.GetItemIdByName("Desu");
@@ -34,48 +34,50 @@ ptb.TestBaff = false;
 
 function ptb:use_test( )	
     if not ptb.hasTest then ptb.hasTest = true end
-    Isaac.GetPlayer(0):AddNullCostume(ptb.TEST_COSTUME);
-    ptb.invulnerability = true;
-    ptb.TestBaff = true;
+    Isaac.GetPlayer(0):AddNullCostume(ptb.TEST_COSTUME);--вотнуть стрелу в колено
+    ptb.invulnerability = true;--включить щиты
+    ptb.TestBaff = true;--добавить статы
     Isaac.GetPlayer(0):AddCacheFlags(CacheFlag.CACHE_DAMAGE);
     Isaac.GetPlayer(0):AddCacheFlags(CacheFlag.CACHE_FIREDELAY);
     Isaac.GetPlayer(0):AddCacheFlags(CacheFlag.CACHE_FLYING);
 	Isaac.GetPlayer(0):EvaluateItems();
-    TManager:addTimer("test_item_use",120,nil,function();
+    TManager:addTimer("test_item_use",240,nil,function();
         ptb.invulnerability = false;
         ptb.TestBaff = false;
         Isaac.GetPlayer(0):TryRemoveNullCostume(ptb.TEST_COSTUME);
+        Isaac.GetPlayer(0):AddCacheFlags(CacheFlag.CACHE_DAMAGE);
+        Isaac.GetPlayer(0):AddCacheFlags(CacheFlag.CACHE_FIREDELAY);
+        Isaac.GetPlayer(0):AddCacheFlags(CacheFlag.CACHE_FLYING);
         Isaac.GetPlayer(0):EvaluateItems();
-    end)
+    end) -- то, что произойдет по истичении 120 кадров (карета превращается в тыкву)
 end
 
 function ptb:mainLoop()
     TManager:updateTimers(Game():GetFrameCount());
 end
 
-function ptb:onCache(EntityPlayer, Cache)
-    Isaac.DebugString(tostring(ptb.TestBaff).." "..tostring(EntityPlayer))
+function ptb:onCache(EntityPlayer,Cache)
     if ptb.TestBaff then  
-        if Cache == CacheFlag.CACHE_DAMAGE then 
-            EntityPlayer.Damage = EntityPlayer.Damage+5; 
+            if Cache == CacheFlag.CACHE_DAMAGE then 
+                EntityPlayer.Damage = EntityPlayer.Damage + 5; 
+            end
+            if Cache == CacheFlag.CACHE_FIREDELAY then
+                EntityPlayer.MaxFireDelay = EntityPlayer.MaxFireDelay - 5;
+            end
+            if Cache == CacheFlag.CACHE_FLYING then
+               EntityPlayer.CanFly = true;
+            end
         end
-        if Cache == CacheFlag.CACHE_FIREDELAY then 
-            EntityPlayer.MaxFireDelay = EntityPlayer.MaxFireDelay-5;
-        end
-        if Cache == CacheFlag.CACHE_FLYING then
-            EntityPlayer.CanFly = true;
-        end
-    end
 end
 
-function ptb:onDamag(TookDamage, DamageAmount, DamageFlag, DamageSource, DamageCountdownFrames)
-    if ptb.invulnerability then return true end
+function ptb:onDamage(TookDamage, DamageAmount, DamageFlag, DamageSource,DamageCountdownFrames)
+    if ptb.invulnerability and TookDamage.Type == EntityType.ENTITY_PLAYER then return false end
 end
 
-ptb:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG,ptb.onDamag,Isaac.GetPlayer(0))
+ptb:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG,ptb.onDamage)
 
 ptb:AddCallback( ModCallbacks.MC_USE_ITEM, ptb.use_test, ptb.COLL_TEST ); 
 
 ptb:AddCallback( ModCallbacks.MC_POST_UPDATE,ptb.mainLoop);
 
-ptb:AddCallback( ModCallbacks.MC_EVALUATE_CACHE,ptb.onCache)
+ptb:AddCallback( ModCallbacks.MC_EVALUATE_CACHE,ptb.onCache,Isaac.GetPlayer(0))
