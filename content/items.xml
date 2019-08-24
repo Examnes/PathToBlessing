@@ -1,4 +1,5 @@
 <items gfxroot="gfx/item/" version="1">
 	<active cache="all" description="Just test" gfx="Collectible_test.png" maxcharges="12" name="Desu" />
+	<passive cache="" description="Sunshine is coming.." gfx="Collectible_test.png" name="Spirit of the Light"/>
 </items>
  

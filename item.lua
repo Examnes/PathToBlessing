@@ -2,6 +2,16 @@ require("resources.scripts.timers")
 Item = {}
 Item.__index = Item;
 
+function get_field_names(t)
+    local names = {}
+    local i,v=next(t,nil)
+    while i do
+        table.insert(names,i)
+        i,v=next(t,i)
+    end
+    return names
+end
+
 function Item:new(mod,name,tmanager)
     local item = {};
     item.Use = function() end;
@@ -15,7 +25,6 @@ function Item:new(mod,name,tmanager)
 
     item.Damage = 0;
     item.Tears = 0;
-    item.Speed = 0;
     item.Flight = false;
     item.Invincibility = false;
 
@@ -40,7 +49,6 @@ function Item:new(mod,name,tmanager)
     mod:AddCallback( ModCallbacks.MC_POST_UPDATE,function() if item.PlayerHas then item:Idle() end end);
 
     mod:AddCallback( ModCallbacks.MC_EVALUATE_CACHE,function(_,EntityPlayer,Cache)
-        Isaac.DebugString("Hay i am debug: "..tostring(EntityPlayer))
         if item.BaffActivated then  
             if Cache == CacheFlag.CACHE_DAMAGE then 
                 EntityPlayer.Damage = EntityPlayer.Damage + item.Damage; 
@@ -51,13 +59,10 @@ function Item:new(mod,name,tmanager)
             if Cache == CacheFlag.CACHE_FLYING then
                EntityPlayer.CanFly = item.Flight;
             end
-            if Cache == CacheFlag.CACHE_SPEED then
-                EntityPlayer.Speed = item.Speed;
-            end
         end
     end,Isaac.GetPlayer(0));
 
-    mod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG,function(TookDamage, DamageAmount, DamageFlag, DamageSource,DamageCountdownFrames)
+    mod:AddCallback( ModCallbacks.MC_ENTITY_TAKE_DMG,function(_,TookDamage, DamageAmount, DamageFlag, DamageSource,DamageCountdownFrames)
         if item.Invincibility and TookDamage.Type == EntityType.ENTITY_PLAYER then return false end
     end)
 
