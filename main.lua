@@ -130,13 +130,11 @@ ptb:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, function(_,Tear)
     if Tear.SpawnerType == EntityType.ENTITY_PLAYER then
         SpiritOfLight.Fire = true;
         if SpiritOfLight.postDeath then
-            if ((Tear.Velocity.Y-1) == SpiritOfLight.Speed.Y) or ((Tear.Velocity.X-1) == SpiritOfLight.Speed.X) then
-                
-            elseif ((Tear.Velocity.X-1) == SpiritOfLight.Speed.X) then
-
-            else
+            if ((Tear.Velocity.Y-1) ~= SpiritOfLight.Speed.Y) and ((Tear.Velocity.X-1) ~= SpiritOfLight.Speed.X) then
                 Tear:Remove();
                 SpiritOfLight.Speed = Tear.Velocity;
+            else
+                Tear.Velocity = Tear.Velocity - Vector(1,1);
             end
         end
     end
