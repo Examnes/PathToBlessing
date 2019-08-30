@@ -1,6 +1,8 @@
 <entities anm2root="gfx/" version="5">
-    <entity anm2path="ghostbaby.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="13" friction="1" id="3" name="Spirit of light" numGridCollisionPoints="12" shadowSize="14" stageHP="0" variant="0" subtype="0">
-        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" />
-        <preload-snd id="153"/> 
+    <entity anm2path="ghostbaby.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="13" friction="1" id="3" name="Spirit of light" numGridCollisionPoints="12" shadowSize="14" stageHP="0" variant="124" subtype="0">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" /> 
+    </entity>
+    <entity anm2path="lilbrimstone.anm2" baseHP="0" boss="0" champion="0" collisionDamage="0" collisionMass="3" collisionRadius="13" friction="1" id="3" name="RayEntity" numGridCollisionPoints="12" shadowSize="14" stageHP="0" variant="125" subtype="0">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0" /> 
     </entity>
 </entities>
